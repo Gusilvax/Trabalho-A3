@@ -5,6 +5,7 @@ import Modulo_A.ValidadorRegras;
 import Modulo_B.Calculadora;
 import Modulo_C.Funcao;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -22,10 +23,17 @@ public class Main {
             System.out.println("=== Calculadora ===");
             Calculadora calculadora = new Calculadora();
 
-            System.out.println("Digite o primeiro número: ");
-            double a = scanner.nextDouble();
-            System.out.println("Digite o segundo número: ");
-            double b = scanner.nextDouble();
+            double a;
+            double b;
+            try {
+                System.out.println("Digite o primeiro número: ");
+                a = scanner.nextDouble();
+                System.out.println("Digite o segundo número: ");
+                b = scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                System.err.println("Entrada inválida. Por favor, digite um número válido.");
+                return;
+            }
 
             System.out.println();
             System.out.println("Soma: " + calculadora.somar(a, b));
