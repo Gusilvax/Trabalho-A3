@@ -4,20 +4,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FormularioCadastro {
 
+   private static final Logger logger = Logger.getLogger(FormularioCadastro.class.getName());
+
    public static boolean podeEnviarDados (boolean camposOK, boolean termosAceitos, boolean bloqueado){
-       return camposOK && termosAceitos && !bloqueado; // Verifica se os dados podem ser enviados com base nas condições fornecidas
+       return camposOK && termosAceitos && !bloqueado;
    }
 
    public static void main (String [] args) {
-       // Nome do arquivo onde serão registradas as ações (modo append)
        String nomeArquivo = "acoes_formulario.txt";
        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-       // try-with-resources garante fechamento de Scanner e FileWriter
        try (Scanner scanner = new Scanner(System.in);
             FileWriter writer = new FileWriter(nomeArquivo, true)) {
 
@@ -25,25 +28,21 @@ public class FormularioCadastro {
 
            System.out.println("=== Cadastro de Usuário ===");
 
-           // Pergunta 1
            System.out.println();
            System.out.println("Os campos estão preenchidos corretamente? (true/false)");
            boolean camposOK = scanner.nextBoolean();
            writer.write("CamposOK: " + camposOK + "\n");
 
-           // Pergunta 2
            System.out.println();
            System.out.println("Os termos de uso foram aceitos? (true/false)");
            boolean termosAceitos = scanner.nextBoolean();
            writer.write("TermosAceitos: " + termosAceitos + "\n");
 
-           // Pergunta 3
            System.out.println();
            System.out.println("O usuário está bloqueado? (true/false)");
            boolean bloqueado = scanner.nextBoolean();
            writer.write("Bloqueado: " + bloqueado + "\n");
 
-           // Resultado
            boolean enviar = podeEnviarDados(camposOK, termosAceitos, bloqueado);
 
            System.out.println("=== Resultado do Cadastro ===");
@@ -63,9 +62,10 @@ public class FormularioCadastro {
            writer.write("\n");
            writer.flush();
 
+       } catch (InputMismatchException e) {
+           System.err.println("Entrada inválida. Por favor, digite 'true' ou 'false'.");
        } catch (IOException e) {
-           System.err.println("Erro ao gravar o arquivo: " + e.getMessage());
-           e.printStackTrace();
+           logger.log(Level.SEVERE, "Erro ao gravar o arquivo", e);
        }
    }
 }

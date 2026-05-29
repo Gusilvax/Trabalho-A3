@@ -7,6 +7,9 @@ public class Triangulo {
     private Ponto pontoC;
 
     public Triangulo (Ponto ponto1, Ponto ponto2, Ponto ponto3){
+        this.pontoA = ponto1;
+        this.pontoB = ponto2;
+        this.pontoC = ponto3;
     }
 
     //Construtor para inicializar o triângulo

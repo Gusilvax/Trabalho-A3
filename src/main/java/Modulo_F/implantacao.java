@@ -25,6 +25,11 @@ public class implantacao {
 
             //Solicita a data de implantação
             System.out.println("Digite a data de implantação:");
+            if (!scanner.hasNextInt()) {
+                System.err.println("Entrada inválida. Por favor, digite um número inteiro.");
+                scanner.next();
+                continue;
+            }
             data = scanner.nextInt();
             System.out.println();
 
