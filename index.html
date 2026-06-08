@@ -766,8 +766,8 @@
             <span>A &ndash; L&oacute;gica Proposicional</span>
         </div>
         <div class="nav-item" data-module="modulo-b">
-            <div class="nav-icon">&#129518;</div>
-            <span>B &ndash; Calculadora</span>
+            <div class="nav-icon">&#128200;</div>
+            <span>B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</span>
         </div>
         <div class="nav-item" data-module="modulo-c">
             <div class="nav-icon">&#128200;</div>
@@ -817,9 +817,9 @@
                     <p>Valida&ccedil;&atilde;o de condi&ccedil;&otilde;es, proposi&ccedil;&otilde;es e regras l&oacute;gicas personalizadas.</p>
                 </div>
                 <div class="feature-card" data-goto="modulo-b">
-                    <div class="feature-card-icon" style="background:rgba(29,185,84,.15);color:#1ED760">&#129518;</div>
-                    <h3>M&oacute;dulo B &ndash; Calculadora</h3>
-                    <p>Opera&ccedil;&otilde;es aritm&eacute;ticas b&aacute;sicas e c&aacute;lculo de pagina&ccedil;&atilde;o.</p>
+                    <div class="feature-card-icon" style="background:rgba(29,185,84,.15);color:#1ED760">&#128200;</div>
+                    <h3>M&oacute;dulo B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</h3>
+                    <p>Fun&ccedil;&atilde;o linear e quadr&aacute;tica com visualiza&ccedil;&atilde;o gr&aacute;fica.</p>
                 </div>
                 <div class="feature-card" data-goto="modulo-c">
                     <div class="feature-card-icon" style="background:rgba(30,215,96,.1);color:#1ED760">&#128200;</div>
@@ -909,50 +909,51 @@
         <!-- MODULO B -->
         <section class="module" id="modulo-b">
             <div class="module-header">
-                <h2>M&oacute;dulo B &ndash; Calculadora &amp; Pagina&ccedil;&atilde;o</h2>
-                <p>Realize opera&ccedil;&otilde;es aritm&eacute;ticas e calcule pagina&ccedil;&atilde;o de itens.</p>
+                <h2>M&oacute;dulo B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</h2>
+                <p>Calcule fun&ccedil;&otilde;es lineares e quadr&aacute;ticas e visualize o gr&aacute;fico gerado.</p>
             </div>
 
             <div class="grid-2">
                 <div class="card">
-                    <div class="card-title">Calculadora <span class="badge">4 opera&ccedil;&otilde;es</span></div>
+                    <div class="card-title">Fun&ccedil;&atilde;o Linear <span class="badge">f(x) = ax + b</span></div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>N&uacute;mero A</label>
-                            <input type="number" id="calcA" placeholder="Ex: 10" step="any">
+                            <label>a (inclina&ccedil;&atilde;o)</label>
+                            <input type="number" id="funcLinA" placeholder="2" step="any">
                         </div>
                         <div class="form-group">
-                            <label>N&uacute;mero B</label>
-                            <input type="number" id="calcB" placeholder="Ex: 5" step="any">
+                            <label>b (intercepto)</label>
+                            <input type="number" id="funcLinB" placeholder="1" step="any">
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="calcular()">Calcular</button>
-                    <div class="result-label" style="margin-top:16px">Resultados</div>
-                    <div class="result-box" id="resultCalc">Insira dois n&uacute;meros e clique em &ldquo;Calcular&rdquo;.</div>
+                    <button class="btn btn-primary" onclick="calcularFuncLinear()">Calcular &amp; Plotar Gr&aacute;fico</button>
+                    <div class="result-box" id="resultFuncLin" style="margin-top:12px">Informe os coeficientes a e b.</div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">Pagina&ccedil;&atilde;o</div>
+                    <div class="card-title">Fun&ccedil;&atilde;o Quadr&aacute;tica <span class="badge">f(x) = ax&sup2; + bx + c</span></div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Total de Itens</label>
-                            <input type="number" id="totalItens" placeholder="Ex: 100" min="0">
+                            <label>a</label>
+                            <input type="number" id="funcQuadA" placeholder="1" step="any">
                         </div>
                         <div class="form-group">
-                            <label>Itens por P&aacute;gina</label>
-                            <input type="number" id="itensPag" placeholder="Ex: 10" min="1">
+                            <label>b</label>
+                            <input type="number" id="funcQuadB" placeholder="-2" step="any">
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group">
-                            <label>P&aacute;gina Atual</label>
-                            <input type="number" id="pagAtual" placeholder="Ex: 3" min="1">
+                            <label>c</label>
+                            <input type="number" id="funcQuadC" placeholder="-3" step="any">
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="calcularPaginacao()">Calcular</button>
-                    <div class="result-label" style="margin-top:16px">Resultados</div>
-                    <div class="result-box" id="resultPag">Informe os dados de pagina&ccedil;&atilde;o.</div>
+                    <button class="btn btn-primary" onclick="calcularFuncQuad()">Calcular &amp; Plotar Gr&aacute;fico</button>
+                    <div class="result-box" id="resultFuncQuad" style="margin-top:12px">Informe os coeficientes a, b e c.</div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-top:24px">
+                <div class="card-title">Gr&aacute;fico da Fun&ccedil;&atilde;o <span class="badge" id="graficoLabel">aguardando...</span></div>
+                <canvas id="canvasGrafico" width="800" height="400" style="width:100%;background:#121212;border-radius:8px;border:1px solid #282828"></canvas>
             </div>
         </section>
 
@@ -1324,47 +1325,167 @@
             `<b>Personalizada (C1 AND !C2):</b> <span class="${custom ? 'val-true' : 'val-false'}">${custom}</span>`;
     }
 
-    // Module B - Calculator
-    function calcular() {
-        const a = parseFloat(document.getElementById('calcA').value);
-        const b = parseFloat(document.getElementById('calcB').value);
-        const box = document.getElementById('resultCalc');
+    // Module B - Função Linear com Gráfico
+    function calcularFuncLinear() {
+        const a = parseFloat(document.getElementById('funcLinA').value);
+        const b = parseFloat(document.getElementById('funcLinB').value);
+        const box = document.getElementById('resultFuncLin');
 
-        if (isNaN(a) || isNaN(b)) { box.textContent = 'Por favor, insira dois numeros validos.'; return; }
+        if (isNaN(a) || isNaN(b)) { box.textContent = 'Preencha os coeficientes a e b.'; return; }
 
-        let div;
-        if (b === 0) {
-            div = 'Divisao por zero nao e permitida.';
-        } else {
-            div = (a / b).toFixed(4);
+        const pontos = [];
+        for (let x = -10; x <= 10; x += 0.5) {
+            pontos.push({ x: x, y: a * x + b });
         }
 
-        box.innerHTML =
-            `<b>Soma:</b>          ${a} + ${b} = ${(a + b).toFixed(4)}\n` +
-            `<b>Subtracao:</b>     ${a} - ${b} = ${(a - b).toFixed(4)}\n` +
-            `<b>Multiplicacao:</b> ${a} * ${b} = ${(a * b).toFixed(4)}\n` +
-            `<b>Divisao:</b>       ${a} / ${b} = ${div}`;
+        const f0 = a * 0 + b;
+        box.innerHTML = `<b>f(x) = ${a}x + ${b}</b>\nf(0) = ${f0.toFixed(2)} | f(5) = ${(a*5+b).toFixed(2)} | f(-5) = ${(a*(-5)+b).toFixed(2)}`;
+
+        plotarGrafico(pontos, `f(x) = ${a}x + ${b}`, 'linear');
     }
 
-    // Module B - Pagination
-    function calcularPaginacao() {
-        const total = parseInt(document.getElementById('totalItens').value);
-        const porPag = parseInt(document.getElementById('itensPag').value);
-        const pagAtual = parseInt(document.getElementById('pagAtual').value);
-        const box = document.getElementById('resultPag');
+    // Module B - Função Quadrática com Gráfico
+    function calcularFuncQuad() {
+        const a = parseFloat(document.getElementById('funcQuadA').value);
+        const b = parseFloat(document.getElementById('funcQuadB').value);
+        const c = parseFloat(document.getElementById('funcQuadC').value);
+        const box = document.getElementById('resultFuncQuad');
 
-        if (isNaN(total) || isNaN(porPag) || porPag <= 0) {
-            box.textContent = 'Valores invalidos. Itens por pagina deve ser > 0.';
-            return;
+        if (isNaN(a) || isNaN(b) || isNaN(c)) { box.textContent = 'Preencha os coeficientes a, b e c.'; return; }
+
+        const pontos = [];
+        for (let x = -10; x <= 10; x += 0.25) {
+            pontos.push({ x: x, y: a * x * x + b * x + c });
         }
 
-        const totalPags = Math.ceil(total / porPag);
-        const indiceInicial = isNaN(pagAtual) || pagAtual <= 0 ? '-' : (pagAtual - 1) * porPag;
+        const delta = b * b - 4 * a * c;
+        let raizes = '';
+        if (a === 0) {
+            raizes = '(não é quadrática, a=0)';
+        } else if (delta < 0) {
+            raizes = 'Sem raízes reais (Δ < 0)';
+        } else if (delta === 0) {
+            const r = (-b / (2 * a)).toFixed(2);
+            raizes = `Raiz dupla: x = ${r}`;
+        } else {
+            const r1 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(2);
+            const r2 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(2);
+            raizes = `x₁ = ${r1} | x₂ = ${r2}`;
+        }
 
-        box.innerHTML =
-            `<b>Total de paginas:</b>  ${totalPags}\n` +
-            `<b>Indice inicial:</b>    ${indiceInicial}` +
-            (indiceInicial !== '-' ? `\n<b>Exibindo itens:</b>   ${indiceInicial} a ${Math.min(indiceInicial + porPag - 1, total - 1)}` : '');
+        const verticeX = a !== 0 ? (-b / (2 * a)).toFixed(2) : '-';
+        const verticeY = a !== 0 ? (a * Math.pow(-b/(2*a), 2) + b * (-b/(2*a)) + c).toFixed(2) : '-';
+
+        box.innerHTML = `<b>f(x) = ${a}x² + ${b}x + ${c}</b>\nΔ = ${delta.toFixed(2)} | ${raizes}\nVértice: (${verticeX}, ${verticeY})`;
+
+        plotarGrafico(pontos, `f(x) = ${a}x² + ${b}x + ${c}`, 'quadrática');
+    }
+
+    // Plotar gráfico no Canvas
+    function plotarGrafico(pontos, titulo, tipo) {
+        const canvas = document.getElementById('canvasGrafico');
+        const ctx = canvas.getContext('2d');
+        const label = document.getElementById('graficoLabel');
+        label.textContent = tipo;
+
+        // Responsivo
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = 800;
+        const W = canvas.width;
+        const H = canvas.height;
+
+        // Limpar
+        ctx.fillStyle = '#121212';
+        ctx.fillRect(0, 0, W, H);
+
+        // Determinar limites Y
+        const yValues = pontos.map(p => p.y);
+        let yMin = Math.min(...yValues);
+        let yMax = Math.max(...yValues);
+        const yMargin = (yMax - yMin) * 0.15 || 5;
+        yMin -= yMargin;
+        yMax += yMargin;
+
+        const xMin = pontos[0].x;
+        const xMax = pontos[pontos.length - 1].x;
+
+        // Funções de conversão
+        const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * (W - 120) + 60;
+        const toCanvasY = (y) => H - 60 - ((y - yMin) / (yMax - yMin)) * (H - 120);
+
+        // Grid
+        ctx.strokeStyle = '#282828';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 10; i++) {
+            const gy = 60 + i * (H - 120) / 10;
+            ctx.beginPath(); ctx.moveTo(60, gy); ctx.lineTo(W - 60, gy); ctx.stroke();
+            const gx = 60 + i * (W - 120) / 10;
+            ctx.beginPath(); ctx.moveTo(gx, 60); ctx.lineTo(gx, H - 60); ctx.stroke();
+        }
+
+        // Eixos X e Y (se visíveis)
+        ctx.strokeStyle = '#727272';
+        ctx.lineWidth = 2;
+        if (yMin <= 0 && yMax >= 0) {
+            const y0 = toCanvasY(0);
+            ctx.beginPath(); ctx.moveTo(60, y0); ctx.lineTo(W - 60, y0); ctx.stroke();
+        }
+        if (xMin <= 0 && xMax >= 0) {
+            const x0 = toCanvasX(0);
+            ctx.beginPath(); ctx.moveTo(x0, 60); ctx.lineTo(x0, H - 60); ctx.stroke();
+        }
+
+        // Labels dos eixos
+        ctx.fillStyle = '#727272';
+        ctx.font = '20px Segoe UI';
+        ctx.textAlign = 'center';
+        for (let i = 0; i <= 10; i++) {
+            const xVal = xMin + i * (xMax - xMin) / 10;
+            ctx.fillText(xVal.toFixed(1), 60 + i * (W - 120) / 10, H - 30);
+        }
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 10; i++) {
+            const yVal = yMax - i * (yMax - yMin) / 10;
+            ctx.fillText(yVal.toFixed(1), 52, 65 + i * (H - 120) / 10);
+        }
+
+        // Plotar curva
+        ctx.strokeStyle = '#1DB954';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = '#1DB954';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pontos) {
+            const cx = toCanvasX(p.x);
+            const cy = toCanvasY(p.y);
+            if (cy >= 40 && cy <= H - 40) {
+                if (!started) { ctx.moveTo(cx, cy); started = true; }
+                else { ctx.lineTo(cx, cy); }
+            } else {
+                started = false;
+            }
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Pontos destacados
+        ctx.fillStyle = '#1ED760';
+        for (const p of pontos.filter((_, i) => i % 4 === 0)) {
+            const cx = toCanvasX(p.x);
+            const cy = toCanvasY(p.y);
+            if (cy >= 40 && cy <= H - 40) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Título
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 24px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(titulo, W / 2, 35);
     }
 
     // Module C - Linear
