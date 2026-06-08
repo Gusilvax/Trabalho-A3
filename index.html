@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalho A3 - Matem&aacute;tica Computacional</title>
+    <style>
+        :root {
+            --primary: #1DB954;
+            --primary-dark: #1aa34a;
+            --primary-light: #1ED760;
+            --accent: #1DB954;
+            --bg: #121212;
+            --bg-card: #181818;
+            --bg-card-hover: #282828;
+            --bg-input: #121212;
+            --text: #B3B3B3;
+            --text-muted: #727272;
+            --text-heading: #FFFFFF;
+            --border: #282828;
+            --success: #1DB954;
+            --error: #e91429;
+            --warning: #ffa42b;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(0,0,0,.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #181818 0%, #121212 100%);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
+            transition: transform .3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.25rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-header p {
+            font-size: .75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        .nav-section {
+            padding: 8px 20px 4px;
+            font-size: .65rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all .2s;
+            border-left: 3px solid transparent;
+            font-size: .875rem;
+            color: var(--text-muted);
+        }
+
+        .nav-item:hover {
+            background: rgba(29, 185, 84, .08);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: rgba(29, 185, 84, .12);
+            border-left-color: var(--primary);
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: rgba(29, 185, 84, .1);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(29, 185, 84, .2);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 64px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            background: rgba(18, 18, 18, .8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            gap: 16px;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .topbar-title {
+            font-size: 1rem;
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 32px;
+            max-width: 1100px;
+        }
+
+        /* Module Sections */
+        .module {
+            display: none;
+            animation: fadeIn .35s ease;
+        }
+
+        .module.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-header {
+            margin-bottom: 28px;
+        }
+
+        .module-header h2 {
+            font-size: 1.75rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .module-header p {
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-size: .9rem;
+            line-height: 1.6;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color .2s;
+        }
+
+        .card:hover { border-color: var(--primary); }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .badge {
+            font-size: .65rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(29, 185, 84, .15);
+            color: var(--primary-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        /* Forms */
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: .875rem;
+            transition: border-color .2s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(29, 185, 84, .15);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: .6;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, .4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+
+        /* Results */
+        .result-box {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: rgba(29, 185, 84, .06);
+            border: 1px solid rgba(29, 185, 84, .2);
+            border-radius: 8px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: .85rem;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre-line;
+            min-height: 48px;
+        }
+
+        .result-box.success {
+            background: rgba(34, 197, 94, .06);
+            border-color: rgba(34, 197, 94, .2);
+        }
+
+        .result-box.error {
+            background: rgba(239, 68, 68, .06);
+            border-color: rgba(239, 68, 68, .2);
+        }
+
+        .result-label {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        /* Logic gate buttons */
+        .gate-btn {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text);
+            font-weight: 600;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: all .2s;
+            text-align: center;
+        }
+
+        .gate-btn:hover {
+            border-color: var(--primary);
+            background: rgba(29, 185, 84, .08);
+        }
+
+        .gate-btn.active {
+            border-color: var(--primary);
+            background: rgba(29, 185, 84, .15);
+            color: var(--primary-light);
+        }
+
+        /* Toggle switches */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .toggle {
+            width: 48px;
+            height: 26px;
+            border-radius: 13px;
+            background: var(--border);
+            cursor: pointer;
+            position: relative;
+            transition: background .2s;
+        }
+
+        .toggle.on { background: var(--primary); }
+
+        .toggle::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform .2s;
+        }
+
+        .toggle.on::after { transform: translateX(22px); }
+
+        .toggle-label {
+            font-size: .85rem;
+            color: var(--text);
+            min-width: 80px;
+        }
+
+        .toggle-value {
+            font-family: 'Cascadia Code', monospace;
+            font-size: .8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .toggle-value.true {
+            background: rgba(34, 197, 94, .15);
+            color: var(--success);
+        }
+
+        .toggle-value.false {
+            background: rgba(239, 68, 68, .15);
+            color: var(--error);
+        }
+
+        /* Table */
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: .8rem;
+        }
+
+        .truth-table th {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-size: .7rem;
+        }
+
+        .truth-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(51, 65, 85, .5);
+            font-family: 'Cascadia Code', monospace;
+        }
+
+        .truth-table tr:hover td { background: rgba(29, 185, 84, .04); }
+
+        .val-true { color: var(--success); font-weight: 600; }
+        .val-false { color: var(--error); font-weight: 600; }
+
+        /* Home hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 32px rgba(29, 185, 84, .3);
+        }
+
+        .hero h2 {
+            font-size: 2.25rem;
+            color: var(--text-heading);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            cursor: pointer;
+            transition: all .25s;
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            font-size: .95rem;
+            color: var(--text-heading);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .feature-card p {
+            font-size: .8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Cadastro specific */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .status-indicator.approved {
+            background: rgba(34, 197, 94, .1);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, .2);
+        }
+
+        .status-indicator.denied {
+            background: rgba(239, 68, 68, .1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, .2);
+        }
+
+        /* Overlay for mobile */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 90;
+        }
+
+        .overlay.show { display: block; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open { transform: translateX(0); }
+
+            .main { margin-left: 0; }
+
+            .menu-btn { display: block; }
+
+            .content { padding: 20px; }
+
+            .grid-2 { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+
+            .hero h2 { font-size: 1.5rem; }
+
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Fibonacci visualization */
+        .fib-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .fib-item {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            font-weight: 600;
+            font-family: 'Cascadia Code', monospace;
+            color: var(--primary-light);
+        }
+
+        /* Canvas for triangle */
+        .canvas-container {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        canvas {
+            border-radius: 4px;
+        }
+
+        /* Checkbox group for cadastro */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color .2s;
+        }
+
+        .checkbox-group:hover { border-color: var(--primary); }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: .875rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Section divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+        }
+
+        /* Implantacao calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-size: .65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: all .15s;
+            border: 1px solid transparent;
+            font-weight: 500;
+        }
+
+        .calendar-day:hover { background: var(--bg-card-hover); }
+
+        .calendar-day.available {
+            background: rgba(34, 197, 94, .1);
+            border-color: rgba(34, 197, 94, .3);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .calendar-day.unavailable {
+            color: var(--text-muted);
+            opacity: .5;
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>Trabalho A3</h1>
+        <p>Matem&aacute;tica Computacional</p>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section">Navega&ccedil;&atilde;o</div>
+        <div class="nav-item active" data-module="home">
+            <div class="nav-icon">&#127968;</div>
+            <span>In&iacute;cio</span>
+        </div>
+
+        <div class="nav-section">M&oacute;dulos</div>
+        <div class="nav-item" data-module="modulo-a">
+            <div class="nav-icon">&#9889;</div>
+            <span>A &ndash; L&oacute;gica Proposicional</span>
+        </div>
+        <div class="nav-item" data-module="modulo-b">
+            <div class="nav-icon">&#128200;</div>
+            <span>B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</span>
+        </div>
+        <div class="nav-item" data-module="modulo-c">
+            <div class="nav-icon">&#128200;</div>
+            <span>C &ndash; Fun&ccedil;&otilde;es</span>
+        </div>
+        <div class="nav-item" data-module="modulo-d">
+            <div class="nav-icon">&#128257;</div>
+            <span>D &ndash; Recurs&atilde;o</span>
+        </div>
+        <div class="nav-item" data-module="modulo-e">
+            <div class="nav-icon">&#128311;</div>
+            <span>E &ndash; Geometria</span>
+        </div>
+        <div class="nav-item" data-module="modulo-f">
+            <div class="nav-icon">&#128268;</div>
+            <span>F &ndash; Portas L&oacute;gicas</span>
+        </div>
+        <div class="nav-item" data-module="modulo-g">
+            <div class="nav-icon">&#128221;</div>
+            <span>G &ndash; Cadastro</span>
+        </div>
+    </nav>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- Main Content -->
+<div class="main">
+    <header class="topbar">
+        <button class="menu-btn" id="menuBtn">&#9776;</button>
+        <span class="topbar-title" id="topbarTitle">In&iacute;cio</span>
+    </header>
+
+    <div class="content">
+
+        <!-- HOME -->
+        <section class="module active" id="home">
+            <div class="hero">
+                <div class="hero-icon">&#128218;</div>
+                <h2>Trabalho A3</h2>
+                <p>Projeto acad&ecirc;mico de Matem&aacute;tica Computacional com 7 m&oacute;dulos interativos cobrindo l&oacute;gica, c&aacute;lculo, geometria, recurs&atilde;o e mais.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card" data-goto="modulo-a">
+                    <div class="feature-card-icon" style="background:rgba(29,185,84,.1);color:#1DB954">&#9889;</div>
+                    <h3>M&oacute;dulo A &ndash; L&oacute;gica Proposicional</h3>
+                    <p>Valida&ccedil;&atilde;o de condi&ccedil;&otilde;es, proposi&ccedil;&otilde;es e regras l&oacute;gicas personalizadas.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-b">
+                    <div class="feature-card-icon" style="background:rgba(29,185,84,.15);color:#1ED760">&#128200;</div>
+                    <h3>M&oacute;dulo B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</h3>
+                    <p>Fun&ccedil;&atilde;o linear e quadr&aacute;tica com visualiza&ccedil;&atilde;o gr&aacute;fica.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-c">
+                    <div class="feature-card-icon" style="background:rgba(30,215,96,.1);color:#1ED760">&#128200;</div>
+                    <h3>M&oacute;dulo C &ndash; Fun&ccedil;&otilde;es</h3>
+                    <p>Fun&ccedil;&otilde;es lineares, quadr&aacute;ticas e sistema de restri&ccedil;&otilde;es.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-d">
+                    <div class="feature-card-icon" style="background:rgba(255,164,43,.1);color:#ffa42b">&#128257;</div>
+                    <h3>M&oacute;dulo D &ndash; Recurs&atilde;o</h3>
+                    <p>C&aacute;lculo de fatorial e sequ&ecirc;ncia de Fibonacci via recurs&atilde;o.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-e">
+                    <div class="feature-card-icon" style="background:rgba(29,185,84,.2);color:#1DB954">&#128311;</div>
+                    <h3>M&oacute;dulo E &ndash; Geometria</h3>
+                    <p>Tri&acirc;ngulos, dist&acirc;ncia entre pontos, per&iacute;metro e &aacute;rea.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-f">
+                    <div class="feature-card-icon" style="background:rgba(30,215,96,.15);color:#1ED760">&#128268;</div>
+                    <h3>M&oacute;dulo F &ndash; Portas L&oacute;gicas</h3>
+                    <p>Simula&ccedil;&atilde;o interativa de AND, OR, NOT, NAND, NOR, XOR.</p>
+                </div>
+                <div class="feature-card" data-goto="modulo-g">
+                    <div class="feature-card-icon" style="background:rgba(29,185,84,.1);color:#1DB954">&#128221;</div>
+                    <h3>M&oacute;dulo G &ndash; Cadastro</h3>
+                    <p>Formul&aacute;rio de cadastro com valida&ccedil;&atilde;o de regras de neg&oacute;cio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULO A -->
+        <section class="module" id="modulo-a">
+            <div class="module-header">
+                <h2>M&oacute;dulo A &ndash; L&oacute;gica Proposicional</h2>
+                <p>Valide condi&ccedil;&otilde;es l&oacute;gicas usando proposi&ccedil;&otilde;es verdadeiras ou falsas. Teste opera&ccedil;&otilde;es AND, OR e regras personalizadas.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Validador de Regras <span class="badge">Interativo</span></div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">Condi&ccedil;&atilde;o 1:</span>
+                    <div class="toggle" id="cond1" onclick="toggleSwitch(this)"></div>
+                    <span class="toggle-value false" id="cond1val">false</span>
+                </div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">Condi&ccedil;&atilde;o 2:</span>
+                    <div class="toggle" id="cond2" onclick="toggleSwitch(this)"></div>
+                    <span class="toggle-value false" id="cond2val">false</span>
+                </div>
+
+                <button class="btn btn-primary" onclick="validarRegras()" style="margin-top:8px">Validar Regras</button>
+
+                <div class="result-label" style="margin-top:16px">Resultado</div>
+                <div class="result-box" id="resultRegras">Alterne as condi&ccedil;&otilde;es e clique em &ldquo;Validar Regras&rdquo;.</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Tabela Verdade</div>
+                <table class="truth-table">
+                    <thead>
+                        <tr><th>C1</th><th>C2</th><th>AND</th><th>OR</th><th>Personalizada</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="val-true">V</td><td class="val-true">V</td>
+                            <td class="val-true">V</td><td class="val-true">V</td><td class="val-false">F</td>
+                        </tr>
+                        <tr>
+                            <td class="val-true">V</td><td class="val-false">F</td>
+                            <td class="val-false">F</td><td class="val-true">V</td><td class="val-true">V</td>
+                        </tr>
+                        <tr>
+                            <td class="val-false">F</td><td class="val-true">V</td>
+                            <td class="val-false">F</td><td class="val-true">V</td><td class="val-false">F</td>
+                        </tr>
+                        <tr>
+                            <td class="val-false">F</td><td class="val-false">F</td>
+                            <td class="val-false">F</td><td class="val-false">F</td><td class="val-false">F</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top:10px;font-size:.75rem;color:var(--text-muted)">Regra personalizada: C1 AND (NOT C2)</p>
+            </div>
+        </section>
+
+        <!-- MODULO B -->
+        <section class="module" id="modulo-b">
+            <div class="module-header">
+                <h2>M&oacute;dulo B &ndash; Fun&ccedil;&otilde;es &amp; Gr&aacute;fico</h2>
+                <p>Calcule fun&ccedil;&otilde;es lineares e quadr&aacute;ticas e visualize o gr&aacute;fico gerado.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Fun&ccedil;&atilde;o Linear <span class="badge">f(x) = ax + b</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>a (inclina&ccedil;&atilde;o)</label>
+                            <input type="number" id="funcLinA" placeholder="2" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>b (intercepto)</label>
+                            <input type="number" id="funcLinB" placeholder="1" step="any">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcularFuncLinear()">Calcular &amp; Plotar Gr&aacute;fico</button>
+                    <div class="result-box" id="resultFuncLin" style="margin-top:12px">Informe os coeficientes a e b.</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Fun&ccedil;&atilde;o Quadr&aacute;tica <span class="badge">f(x) = ax&sup2; + bx + c</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>a</label>
+                            <input type="number" id="funcQuadA" placeholder="1" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>b</label>
+                            <input type="number" id="funcQuadB" placeholder="-2" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>c</label>
+                            <input type="number" id="funcQuadC" placeholder="-3" step="any">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcularFuncQuad()">Calcular &amp; Plotar Gr&aacute;fico</button>
+                    <div class="result-box" id="resultFuncQuad" style="margin-top:12px">Informe os coeficientes a, b e c.</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:24px">
+                <div class="card-title">Gr&aacute;fico da Fun&ccedil;&atilde;o <span class="badge" id="graficoLabel">aguardando...</span></div>
+                <canvas id="canvasGrafico" width="800" height="400" style="width:100%;background:#121212;border-radius:8px;border:1px solid #282828"></canvas>
+            </div>
+        </section>
+
+        <!-- MODULO C -->
+        <section class="module" id="modulo-c">
+            <div class="module-header">
+                <h2>M&oacute;dulo C &ndash; Fun&ccedil;&otilde;es Matem&aacute;ticas</h2>
+                <p>Calcule fun&ccedil;&otilde;es lineares, quadr&aacute;ticas e verifique restri&ccedil;&otilde;es de intervalos.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Fun&ccedil;&atilde;o Linear <span class="badge">f(x) = ax + b</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>a</label>
+                            <input type="number" id="linA" placeholder="2" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>b</label>
+                            <input type="number" id="linB" placeholder="3" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>x</label>
+                            <input type="number" id="linX" placeholder="4" step="any">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcLinear()">Calcular</button>
+                    <div class="result-box" id="resultLinear" style="margin-top:12px">f(x) = ?</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Fun&ccedil;&atilde;o Quadr&aacute;tica <span class="badge">f(x) = ax&sup2; + bx + c</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>a</label>
+                            <input type="number" id="quadA" placeholder="2" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>b</label>
+                            <input type="number" id="quadB" placeholder="3" step="any">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>c</label>
+                            <input type="number" id="quadC" placeholder="1" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>x</label>
+                            <input type="number" id="quadX" placeholder="4" step="any">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcQuadratica()">Calcular</button>
+                    <div class="result-box" id="resultQuad" style="margin-top:12px">f(x) = ?</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Sistema de Restri&ccedil;&otilde;es</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valor</label>
+                        <input type="number" id="restValor" placeholder="5" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Limite Inferior</label>
+                        <input type="number" id="restMin" placeholder="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Limite Superior</label>
+                        <input type="number" id="restMax" placeholder="10" step="any">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="verificarIntervalo()">Verificar Intervalo</button>
+                <div class="result-box" id="resultRest" style="margin-top:12px">Informe os valores para verificar.</div>
+
+                <div class="divider"></div>
+
+                <div class="card-title">Restri&ccedil;&atilde;o de Soma</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valores (separados por v&iacute;rgula)</label>
+                        <input type="text" id="restValores" placeholder="1, 2, 3, 4">
+                    </div>
+                    <div class="form-group">
+                        <label>Limite</label>
+                        <input type="number" id="restLimite" placeholder="15" step="any">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="verificarRestricaoSoma()">Verificar</button>
+                <div class="result-box" id="resultRestSoma" style="margin-top:12px">Informe os valores e o limite.</div>
+            </div>
+        </section>
+
+        <!-- MODULO D -->
+        <section class="module" id="modulo-d">
+            <div class="module-header">
+                <h2>M&oacute;dulo D &ndash; Recurs&atilde;o</h2>
+                <p>Explore fatorial e sequ&ecirc;ncia de Fibonacci com c&aacute;lculos recursivos.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Fatorial <span class="badge">n!</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>N&uacute;mero (n)</label>
+                            <input type="number" id="fatN" placeholder="5" min="0" max="20">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcFatorial()">Calcular</button>
+                    <div class="result-box" id="resultFat" style="margin-top:12px">n! = ?</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Fibonacci <span class="badge">Sequ&ecirc;ncia</span></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>&Iacute;ndice (n)</label>
+                            <input type="number" id="fibN" placeholder="10" min="0" max="25">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcFibonacci()">Gerar Sequ&ecirc;ncia</button>
+                    <div class="result-label" style="margin-top:16px">Sequ&ecirc;ncia</div>
+                    <div class="fib-sequence" id="fibSequence"></div>
+                    <div class="result-box" id="resultFib" style="margin-top:12px">Fibonacci(n) = ?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULO E -->
+        <section class="module" id="modulo-e">
+            <div class="module-header">
+                <h2>M&oacute;dulo E &ndash; Geometria</h2>
+                <p>Calcule dist&acirc;ncias entre pontos, per&iacute;metro e &aacute;rea de tri&acirc;ngulos com visualiza&ccedil;&atilde;o gr&aacute;fica.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Tri&acirc;ngulo <span class="badge">3 pontos</span></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ponto A (x)</label>
+                        <input type="number" id="ax" placeholder="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Ponto A (y)</label>
+                        <input type="number" id="ay" placeholder="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Ponto B (x)</label>
+                        <input type="number" id="bx" placeholder="4" step="any">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ponto B (y)</label>
+                        <input type="number" id="by" placeholder="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Ponto C (x)</label>
+                        <input type="number" id="cx" placeholder="2" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Ponto C (y)</label>
+                        <input type="number" id="cy" placeholder="3" step="any">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calcTriangulo()">Calcular &amp; Visualizar</button>
+
+                <div class="grid-2" style="margin-top:16px">
+                    <div>
+                        <div class="result-label">Resultados</div>
+                        <div class="result-box" id="resultTriangulo">Informe os 3 pontos do tri&acirc;ngulo.</div>
+                    </div>
+                    <div>
+                        <div class="result-label">Visualiza&ccedil;&atilde;o</div>
+                        <div class="canvas-container">
+                            <canvas id="triangleCanvas" width="280" height="220"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULO F -->
+        <section class="module" id="modulo-f">
+            <div class="module-header">
+                <h2>M&oacute;dulo F &ndash; Portas L&oacute;gicas &amp; Implanta&ccedil;&atilde;o</h2>
+                <p>Simule portas l&oacute;gicas interativamente e gerencie datas de implanta&ccedil;&atilde;o.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Simulador de Portas L&oacute;gicas <span class="badge">6 portas</span></div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">Entrada A:</span>
+                    <div class="toggle" id="gateA" onclick="toggleSwitch(this); atualizarPortas()"></div>
+                    <span class="toggle-value false" id="gateAval">false</span>
+                </div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">Entrada B:</span>
+                    <div class="toggle" id="gateB" onclick="toggleSwitch(this); atualizarPortas()"></div>
+                    <span class="toggle-value false" id="gateBval">false</span>
+                </div>
+
+                <div class="grid-3" style="margin-top:16px" id="gateResults">
+                    <div class="gate-btn" id="gate-and"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">AND</div><span>-</span></div>
+                    <div class="gate-btn" id="gate-or"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">OR</div><span>-</span></div>
+                    <div class="gate-btn" id="gate-not"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">NOT A</div><span>-</span></div>
+                    <div class="gate-btn" id="gate-nand"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">NAND</div><span>-</span></div>
+                    <div class="gate-btn" id="gate-nor"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">NOR</div><span>-</span></div>
+                    <div class="gate-btn" id="gate-xor"><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px">XOR</div><span>-</span></div>
+                </div>
+
+                <div class="result-label" style="margin-top:16px">Descri&ccedil;&atilde;o</div>
+                <div class="result-box" id="gateDesc">Clique em uma porta para ver sua descri&ccedil;&atilde;o.</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Calend&aacute;rio de Implanta&ccedil;&atilde;o <span class="badge">Julho</span></div>
+                <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:12px">Datas dispon&iacute;veis para implanta&ccedil;&atilde;o est&atilde;o destacadas em verde (sextas-feiras).</p>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="result-box" id="resultImplant" style="margin-top:16px">Selecione uma data no calend&aacute;rio.</div>
+            </div>
+        </section>
+
+        <!-- MODULO G -->
+        <section class="module" id="modulo-g">
+            <div class="module-header">
+                <h2>M&oacute;dulo G &ndash; Formul&aacute;rio de Cadastro</h2>
+                <p>Simule um cadastro de usu&aacute;rio com valida&ccedil;&atilde;o de regras de neg&oacute;cio.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Cadastro de Usu&aacute;rio <span class="badge">Valida&ccedil;&atilde;o</span></div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="cadNome" placeholder="Jo&atilde;o Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="cadEmail" placeholder="joao@email.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="cadCpf" placeholder="000.000.000-00" maxlength="14">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="cadTel" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+
+                <div style="margin:8px 0 16px">
+                    <div class="checkbox-group" onclick="this.querySelector('input').click()">
+                        <input type="checkbox" id="cadTermos" onclick="event.stopPropagation()">
+                        <label for="cadTermos" onclick="event.stopPropagation()">Li e aceito os termos de uso</label>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;align-items:center">
+                    <button class="btn btn-primary" onclick="enviarCadastro()">Enviar Cadastro</button>
+                    <span id="cadStatus"></span>
+                </div>
+
+                <div class="result-label" style="margin-top:16px">Resultado da Valida&ccedil;&atilde;o</div>
+                <div class="result-box" id="resultCad">Preencha o formul&aacute;rio e clique em &ldquo;Enviar Cadastro&rdquo;.</div>
+
+                <div class="divider"></div>
+
+                <div class="card-title">Hist&oacute;rico de A&ccedil;&otilde;es</div>
+                <div class="result-box" id="cadHistorico" style="font-size:.75rem;max-height:180px;overflow-y:auto">Nenhuma a&ccedil;&atilde;o registrada.</div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<script>
+    // Navigation
+    const navItems = document.querySelectorAll('.nav-item');
+    const modules = document.querySelectorAll('.module');
+    const topbarTitle = document.getElementById('topbarTitle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuBtn = document.getElementById('menuBtn');
+
+    function navigateTo(moduleId) {
+        navItems.forEach(n => n.classList.remove('active'));
+        modules.forEach(m => m.classList.remove('active'));
+
+        const target = document.querySelector(`[data-module="${moduleId}"]`);
+        if (target) target.classList.add('active');
+
+        const mod = document.getElementById(moduleId);
+        if (mod) mod.classList.add('active');
+
+        topbarTitle.textContent = target ? target.querySelector('span').textContent : 'Inicio';
+
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => navigateTo(item.dataset.module));
+    });
+
+    document.querySelectorAll('.feature-card').forEach(card => {
+        card.addEventListener('click', () => navigateTo(card.dataset.goto));
+    });
+
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+
+    // Gate descriptions
+    document.querySelectorAll('#gateResults .gate-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#gateResults .gate-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const gateDescs = {
+                'gate-and': 'AND (E): retorna verdadeiro apenas se todas as entradas sao verdadeiras.\nQuando usar: validar varias condicoes que todas precisam ser verdadeiras.\nExemplo: Permitir acesso somente se (senhaCorreta AND usuarioAtivo).',
+                'gate-or': 'OR (OU): retorna verdadeiro se pelo menos uma das entradas for verdadeira.\nQuando usar: aceitar quando uma de varias condicoes permitir.\nExemplo: Permitir login se (tokenValido OR senhaCorreta).',
+                'gate-not': 'NOT (NAO): inverte o valor logico.\nQuando usar: negar uma condicao ou aplicar logica inversa.\nExemplo: bloquear acao se (NOT usuarioAdmin).',
+                'gate-nand': 'NAND: negacao do AND (verdadeiro, exceto quando todas as entradas sao verdadeiras).\nQuando usar: otimizar certas verificacoes ou em circuitos digitais.\nExemplo: permitir acao salvo quando (regra1 AND regra2) forem ambas verdadeiras.',
+                'gate-nor': 'NOR: negacao do OR (verdadeiro somente quando todas as entradas sao falsas).\nQuando usar: detectar ausencia completa de condicoes.\nExemplo: disparar alarme se (sensorA NOR sensorB) -> nenhum sensor disparado.',
+                'gate-xor': 'XOR (OU exclusivo): retorna verdadeiro se exatamente uma das entradas for verdadeira.\nQuando usar: detectar diferenca entre duas condicoes.\nExemplo: habilitar modo especial se (opcaoA XOR opcaoB) -> apenas uma opcao pode estar ativa.'
+            };
+            document.getElementById('gateDesc').textContent = gateDescs[btn.id] || '';
+        });
+    });
+
+    // Toggle Switch
+    function toggleSwitch(el) {
+        el.classList.toggle('on');
+        const isOn = el.classList.contains('on');
+        const valSpan = document.getElementById(el.id + 'val');
+        valSpan.textContent = isOn ? 'true' : 'false';
+        valSpan.className = 'toggle-value ' + (isOn ? 'true' : 'false');
+    }
+
+    // Module A
+    function validarRegras() {
+        const c1 = document.getElementById('cond1').classList.contains('on');
+        const c2 = document.getElementById('cond2').classList.contains('on');
+
+        const and = c1 && c2;
+        const or = c1 || c2;
+        const custom = c1 && !c2;
+
+        const box = document.getElementById('resultRegras');
+        box.innerHTML =
+            `<b>Condicao 1:</b> ${c1}  |  <b>Condicao 2:</b> ${c2}\n` +
+            `\n<b>AND (ambas verdadeiras):</b> <span class="${and ? 'val-true' : 'val-false'}">${and}</span>\n` +
+            `<b>OR  (pelo menos uma):</b>    <span class="${or ? 'val-true' : 'val-false'}">${or}</span>\n` +
+            `<b>Personalizada (C1 AND !C2):</b> <span class="${custom ? 'val-true' : 'val-false'}">${custom}</span>`;
+    }
+
+    // Module B - Função Linear com Gráfico
+    function calcularFuncLinear() {
+        const a = parseFloat(document.getElementById('funcLinA').value);
+        const b = parseFloat(document.getElementById('funcLinB').value);
+        const box = document.getElementById('resultFuncLin');
+
+        if (isNaN(a) || isNaN(b)) { box.textContent = 'Preencha os coeficientes a e b.'; return; }
+
+        const pontos = [];
+        for (let x = -10; x <= 10; x += 0.5) {
+            pontos.push({ x: x, y: a * x + b });
+        }
+
+        const f0 = a * 0 + b;
+        box.innerHTML = `<b>f(x) = ${a}x + ${b}</b>\nf(0) = ${f0.toFixed(2)} | f(5) = ${(a*5+b).toFixed(2)} | f(-5) = ${(a*(-5)+b).toFixed(2)}`;
+
+        plotarGrafico(pontos, `f(x) = ${a}x + ${b}`, 'linear');
+    }
+
+    // Module B - Função Quadrática com Gráfico
+    function calcularFuncQuad() {
+        const a = parseFloat(document.getElementById('funcQuadA').value);
+        const b = parseFloat(document.getElementById('funcQuadB').value);
+        const c = parseFloat(document.getElementById('funcQuadC').value);
+        const box = document.getElementById('resultFuncQuad');
+
+        if (isNaN(a) || isNaN(b) || isNaN(c)) { box.textContent = 'Preencha os coeficientes a, b e c.'; return; }
+
+        const pontos = [];
+        for (let x = -10; x <= 10; x += 0.25) {
+            pontos.push({ x: x, y: a * x * x + b * x + c });
+        }
+
+        const delta = b * b - 4 * a * c;
+        let raizes = '';
+        if (a === 0) {
+            raizes = '(não é quadrática, a=0)';
+        } else if (delta < 0) {
+            raizes = 'Sem raízes reais (Δ < 0)';
+        } else if (delta === 0) {
+            const r = (-b / (2 * a)).toFixed(2);
+            raizes = `Raiz dupla: x = ${r}`;
+        } else {
+            const r1 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(2);
+            const r2 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(2);
+            raizes = `x₁ = ${r1} | x₂ = ${r2}`;
+        }
+
+        const verticeX = a !== 0 ? (-b / (2 * a)).toFixed(2) : '-';
+        const verticeY = a !== 0 ? (a * Math.pow(-b/(2*a), 2) + b * (-b/(2*a)) + c).toFixed(2) : '-';
+
+        box.innerHTML = `<b>f(x) = ${a}x² + ${b}x + ${c}</b>\nΔ = ${delta.toFixed(2)} | ${raizes}\nVértice: (${verticeX}, ${verticeY})`;
+
+        plotarGrafico(pontos, `f(x) = ${a}x² + ${b}x + ${c}`, 'quadrática');
+    }
+
+    // Plotar gráfico no Canvas
+    function plotarGrafico(pontos, titulo, tipo) {
+        const canvas = document.getElementById('canvasGrafico');
+        const ctx = canvas.getContext('2d');
+        const label = document.getElementById('graficoLabel');
+        label.textContent = tipo;
+
+        // Responsivo
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = 800;
+        const W = canvas.width;
+        const H = canvas.height;
+
+        // Limpar
+        ctx.fillStyle = '#121212';
+        ctx.fillRect(0, 0, W, H);
+
+        // Determinar limites Y
+        const yValues = pontos.map(p => p.y);
+        let yMin = Math.min(...yValues);
+        let yMax = Math.max(...yValues);
+        const yMargin = (yMax - yMin) * 0.15 || 5;
+        yMin -= yMargin;
+        yMax += yMargin;
+
+        const xMin = pontos[0].x;
+        const xMax = pontos[pontos.length - 1].x;
+
+        // Funções de conversão
+        const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * (W - 120) + 60;
+        const toCanvasY = (y) => H - 60 - ((y - yMin) / (yMax - yMin)) * (H - 120);
+
+        // Grid
+        ctx.strokeStyle = '#282828';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 10; i++) {
+            const gy = 60 + i * (H - 120) / 10;
+            ctx.beginPath(); ctx.moveTo(60, gy); ctx.lineTo(W - 60, gy); ctx.stroke();
+            const gx = 60 + i * (W - 120) / 10;
+            ctx.beginPath(); ctx.moveTo(gx, 60); ctx.lineTo(gx, H - 60); ctx.stroke();
+        }
+
+        // Eixos X e Y (se visíveis)
+        ctx.strokeStyle = '#727272';
+        ctx.lineWidth = 2;
+        if (yMin <= 0 && yMax >= 0) {
+            const y0 = toCanvasY(0);
+            ctx.beginPath(); ctx.moveTo(60, y0); ctx.lineTo(W - 60, y0); ctx.stroke();
+        }
+        if (xMin <= 0 && xMax >= 0) {
+            const x0 = toCanvasX(0);
+            ctx.beginPath(); ctx.moveTo(x0, 60); ctx.lineTo(x0, H - 60); ctx.stroke();
+        }
+
+        // Labels dos eixos
+        ctx.fillStyle = '#727272';
+        ctx.font = '20px Segoe UI';
+        ctx.textAlign = 'center';
+        for (let i = 0; i <= 10; i++) {
+            const xVal = xMin + i * (xMax - xMin) / 10;
+            ctx.fillText(xVal.toFixed(1), 60 + i * (W - 120) / 10, H - 30);
+        }
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 10; i++) {
+            const yVal = yMax - i * (yMax - yMin) / 10;
+            ctx.fillText(yVal.toFixed(1), 52, 65 + i * (H - 120) / 10);
+        }
+
+        // Plotar curva
+        ctx.strokeStyle = '#1DB954';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = '#1DB954';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pontos) {
+            const cx = toCanvasX(p.x);
+            const cy = toCanvasY(p.y);
+            if (cy >= 40 && cy <= H - 40) {
+                if (!started) { ctx.moveTo(cx, cy); started = true; }
+                else { ctx.lineTo(cx, cy); }
+            } else {
+                started = false;
+            }
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Pontos destacados
+        ctx.fillStyle = '#1ED760';
+        for (const p of pontos.filter((_, i) => i % 4 === 0)) {
+            const cx = toCanvasX(p.x);
+            const cy = toCanvasY(p.y);
+            if (cy >= 40 && cy <= H - 40) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Título
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 24px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(titulo, W / 2, 35);
+    }
+
+    // Module C - Linear
+    function calcLinear() {
+        const a = parseFloat(document.getElementById('linA').value);
+        const b = parseFloat(document.getElementById('linB').value);
+        const x = parseFloat(document.getElementById('linX').value);
+        const box = document.getElementById('resultLinear');
+
+        if (isNaN(a) || isNaN(b) || isNaN(x)) { box.textContent = 'Preencha todos os campos.'; return; }
+
+        const result = a * x + b;
+        box.innerHTML = `f(${x}) = ${a} * ${x} + ${b} = <b>${result}</b>`;
+    }
+
+    // Module C - Quadratic
+    function calcQuadratica() {
+        const a = parseFloat(document.getElementById('quadA').value);
+        const b = parseFloat(document.getElementById('quadB').value);
+        const c = parseFloat(document.getElementById('quadC').value);
+        const x = parseFloat(document.getElementById('quadX').value);
+        const box = document.getElementById('resultQuad');
+
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(x)) { box.textContent = 'Preencha todos os campos.'; return; }
+
+        const result = a * Math.pow(x, 2) + b * x + c;
+        box.innerHTML = `f(${x}) = ${a}(${x})² + ${b}(${x}) + ${c} = <b>${result}</b>`;
+    }
+
+    // Module C - Restrictions
+    function verificarIntervalo() {
+        const valor = parseFloat(document.getElementById('restValor').value);
+        const min = parseFloat(document.getElementById('restMin').value);
+        const max = parseFloat(document.getElementById('restMax').value);
+        const box = document.getElementById('resultRest');
+
+        if (isNaN(valor) || isNaN(min) || isNaN(max)) { box.textContent = 'Preencha todos os campos.'; return; }
+
+        const dentro = valor >= min && valor <= max;
+        box.className = 'result-box ' + (dentro ? 'success' : 'error');
+        box.innerHTML = `${valor} ${dentro ? 'esta' : '<b>nao</b> esta'} no intervalo [${min}, ${max}]\nResultado: <b>${dentro}</b>`;
+    }
+
+    function verificarRestricaoSoma() {
+        const valoresStr = document.getElementById('restValores').value;
+        const limite = parseFloat(document.getElementById('restLimite').value);
+        const box = document.getElementById('resultRestSoma');
+
+        if (!valoresStr || isNaN(limite)) { box.textContent = 'Preencha todos os campos.'; return; }
+
+        const valores = valoresStr.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+        const soma = valores.reduce((s, v) => s + v, 0);
+        const ok = soma <= limite;
+
+        box.className = 'result-box ' + (ok ? 'success' : 'error');
+        box.innerHTML = `Valores: [${valores.join(', ')}]\nSoma: ${soma}\nLimite: ${limite}\nSoma <= Limite: <b>${ok}</b>`;
+    }
+
+    // Module D - Factorial
+    function fatorial(n) {
+        if (n <= 1) return 1;
+        return n * fatorial(n - 1);
+    }
+
+    function calcFatorial() {
+        const n = parseInt(document.getElementById('fatN').value);
+        const box = document.getElementById('resultFat');
+
+        if (isNaN(n) || n < 0) { box.textContent = 'O numero deve ser nao negativo.'; return; }
+        if (n > 20) { box.textContent = 'Limite maximo: 20 (para evitar overflow).'; return; }
+
+        const result = fatorial(n);
+        let steps = [];
+        for (let i = n; i >= 1; i--) steps.push(i);
+        box.innerHTML = `${n}! = ${steps.join(' x ')} = <b>${result}</b>`;
+    }
+
+    // Module D - Fibonacci
+    function fibonacci(n) {
+        if (n <= 0) return 0;
+        if (n === 1) return 1;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    function calcFibonacci() {
+        const n = parseInt(document.getElementById('fibN').value);
+        const box = document.getElementById('resultFib');
+        const seqContainer = document.getElementById('fibSequence');
+
+        if (isNaN(n) || n < 0) { box.textContent = 'O indice deve ser nao negativo.'; seqContainer.innerHTML = ''; return; }
+        if (n > 25) { box.textContent = 'Limite maximo: 25.'; seqContainer.innerHTML = ''; return; }
+
+        seqContainer.innerHTML = '';
+        const seq = [];
+        for (let i = 0; i <= n; i++) {
+            const val = fibonacci(i);
+            seq.push(val);
+            const div = document.createElement('div');
+            div.className = 'fib-item';
+            div.textContent = val;
+            seqContainer.appendChild(div);
+        }
+
+        box.innerHTML = `Fibonacci(${n}) = <b>${seq[seq.length - 1]}</b>\nTotal de termos: ${seq.length}`;
+    }
+
+    // Module E - Triangle
+    function dist(x1, y1, x2, y2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
+    function calcTriangulo() {
+        const ax = parseFloat(document.getElementById('ax').value);
+        const ay = parseFloat(document.getElementById('ay').value);
+        const bx = parseFloat(document.getElementById('bx').value);
+        const by = parseFloat(document.getElementById('by').value);
+        const cx = parseFloat(document.getElementById('cx').value);
+        const cy = parseFloat(document.getElementById('cy').value);
+        const box = document.getElementById('resultTriangulo');
+
+        if ([ax, ay, bx, by, cx, cy].some(isNaN)) { box.textContent = 'Preencha todos os pontos.'; return; }
+
+        const ab = dist(ax, ay, bx, by);
+        const bc = dist(bx, by, cx, cy);
+        const ca = dist(cx, cy, ax, ay);
+        const perimetro = ab + bc + ca;
+        const s = perimetro / 2;
+        const area = Math.sqrt(s * (s - ab) * (s - bc) * (s - ca));
+
+        box.innerHTML =
+            `<b>Lado AB:</b>     ${ab.toFixed(4)}\n` +
+            `<b>Lado BC:</b>     ${bc.toFixed(4)}\n` +
+            `<b>Lado CA:</b>     ${ca.toFixed(4)}\n` +
+            `<b>Perimetro:</b>   ${perimetro.toFixed(4)}\n` +
+            `<b>Area (Heron):</b> ${area.toFixed(4)}`;
+
+        drawTriangle(ax, ay, bx, by, cx, cy);
+    }
+
+    function drawTriangle(ax, ay, bx, by, cx, cy) {
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const pad = 30;
+
+        ctx.clearRect(0, 0, W, H);
+
+        const pts = [[ax, ay], [bx, by], [cx, cy]];
+        const xs = pts.map(p => p[0]);
+        const ys = pts.map(p => p[1]);
+        const minX = Math.min(...xs), maxX = Math.max(...xs);
+        const minY = Math.min(...ys), maxY = Math.max(...ys);
+        const rangeX = maxX - minX || 1;
+        const rangeY = maxY - minY || 1;
+
+        function tx(x) { return pad + ((x - minX) / rangeX) * (W - 2 * pad); }
+        function ty(y) { return H - pad - ((y - minY) / rangeY) * (H - 2 * pad); }
+
+        // Grid
+        ctx.strokeStyle = '#282828';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i <= 4; i++) {
+            const x = pad + (i / 4) * (W - 2 * pad);
+            ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, H - pad); ctx.stroke();
+            const y = pad + (i / 4) * (H - 2 * pad);
+            ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+        }
+
+        // Triangle fill
+        ctx.fillStyle = 'rgba(29, 185, 84, 0.1)';
+        ctx.beginPath();
+        ctx.moveTo(tx(ax), ty(ay));
+        ctx.lineTo(tx(bx), ty(by));
+        ctx.lineTo(tx(cx), ty(cy));
+        ctx.closePath();
+        ctx.fill();
+
+        // Triangle outline
+        ctx.strokeStyle = '#1DB954';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(tx(ax), ty(ay));
+        ctx.lineTo(tx(bx), ty(by));
+        ctx.lineTo(tx(cx), ty(cy));
+        ctx.closePath();
+        ctx.stroke();
+
+        // Points
+        const labels = ['A', 'B', 'C'];
+        const colors = ['#1DB954', '#1ED760', '#1aa34a'];
+        pts.forEach((p, i) => {
+            ctx.fillStyle = colors[i];
+            ctx.beginPath();
+            ctx.arc(tx(p[0]), ty(p[1]), 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#B3B3B3';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(`${labels[i]}(${p[0]},${p[1]})`, tx(p[0]) + 8, ty(p[1]) - 8);
+        });
+    }
+
+    // Module F - Logic Gates
+    function atualizarPortas() {
+        const a = document.getElementById('gateA').classList.contains('on');
+        const b = document.getElementById('gateB').classList.contains('on');
+
+        const results = {
+            'gate-and': a && b,
+            'gate-or': a || b,
+            'gate-not': !a,
+            'gate-nand': !(a && b),
+            'gate-nor': !(a || b),
+            'gate-xor': a !== b
+        };
+
+        Object.entries(results).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            const span = el.querySelector('span');
+            span.textContent = val ? 'TRUE' : 'FALSE';
+            span.className = val ? 'val-true' : 'val-false';
+        });
+    }
+
+    // Module F - Calendar
+    function criarCalendario() {
+        const grid = document.getElementById('calendarGrid');
+        const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+        const disponiveisJulho = [19, 26];
+        const primeiroDia = 1; // July starts on Tuesday (index 2)
+        const startDay = 2;
+
+        dias.forEach(d => {
+            const h = document.createElement('div');
+            h.className = 'calendar-header';
+            h.textContent = d;
+            grid.appendChild(h);
+        });
+
+        for (let i = 0; i < startDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-day empty';
+            grid.appendChild(empty);
+        }
+
+        for (let d = 1; d <= 31; d++) {
+            const day = document.createElement('div');
+            day.className = 'calendar-day';
+            day.textContent = d;
+
+            if (disponiveisJulho.includes(d)) {
+                day.classList.add('available');
+            } else {
+                day.classList.add('unavailable');
+            }
+
+            day.addEventListener('click', () => selecionarData(d, disponiveisJulho.includes(d)));
+            grid.appendChild(day);
+        }
+    }
+
+    function selecionarData(data, disponivel) {
+        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+        event.target.classList.add('selected');
+
+        const box = document.getElementById('resultImplant');
+        if (disponivel) {
+            box.className = 'result-box success';
+            box.innerHTML = `<b>Data ${data} de Julho</b> - Sexta-feira\nImplantacao <b>LIBERADA</b>\nStatus: Disponivel para implantacao.`;
+        } else {
+            box.className = 'result-box error';
+            box.innerHTML = `<b>Data ${data} de Julho</b>\nImplantacao <b>NAO LIBERADA</b>\nMotivo: Data alugada ou fora do calendario de implantacao.`;
+        }
+    }
+
+    // Module G - Cadastro
+    const cadHistorico = [];
+
+    function addHistorico(msg) {
+        const now = new Date().toLocaleString('pt-BR');
+        cadHistorico.unshift(`[${now}] ${msg}`);
+        document.getElementById('cadHistorico').textContent = cadHistorico.join('\n');
+    }
+
+    function enviarCadastro() {
+        const nome = document.getElementById('cadNome').value.trim();
+        const email = document.getElementById('cadEmail').value.trim();
+        const cpf = document.getElementById('cadCpf').value.trim();
+        const tel = document.getElementById('cadTel').value.trim();
+        const termos = document.getElementById('cadTermos').checked;
+        const box = document.getElementById('resultCad');
+        const status = document.getElementById('cadStatus');
+
+        const camposOK = nome.length > 0 && email.length > 0 && cpf.length > 0 && tel.length > 0;
+        const bloqueado = false;
+
+        addHistorico(`CamposOK: ${camposOK}`);
+        addHistorico(`TermosAceitos: ${termos}`);
+        addHistorico(`Bloqueado: ${bloqueado}`);
+
+        const enviar = camposOK && termos && !bloqueado;
+
+        if (enviar) {
+            box.className = 'result-box success';
+            box.innerHTML =
+                `<b>Dados enviados com sucesso!</b>\n\n` +
+                `Nome:     ${nome}\n` +
+                `E-mail:   ${email}\n` +
+                `CPF:      ${cpf}\n` +
+                `Telefone: ${tel}\n` +
+                `Termos:   Aceitos`;
+            status.innerHTML = '<span class="status-indicator approved">Aprovado</span>';
+            addHistorico('Resultado: Dados enviados com sucesso!');
+        } else {
+            let erros = [];
+            if (!camposOK) erros.push('Campos obrigatorios nao preenchidos');
+            if (!termos) erros.push('Termos de uso nao aceitos');
+
+            box.className = 'result-box error';
+            box.innerHTML = `<b>Erro: Nao foi possivel enviar os dados.</b>\n\nProblemas encontrados:\n${erros.map(e => '  - ' + e).join('\n')}`;
+            status.innerHTML = '<span class="status-indicator denied">Recusado</span>';
+            addHistorico('Resultado: Erro - Nao foi possivel enviar os dados.');
+        }
+    }
+
+    // CPF mask
+    document.getElementById('cadCpf').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 9) v = v.slice(0, 3) + '.' + v.slice(3, 6) + '.' + v.slice(6, 9) + '-' + v.slice(9);
+        else if (v.length > 6) v = v.slice(0, 3) + '.' + v.slice(3, 6) + '.' + v.slice(6);
+        else if (v.length > 3) v = v.slice(0, 3) + '.' + v.slice(3);
+        e.target.value = v;
+    });
+
+    // Phone mask
+    document.getElementById('cadTel').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 6) v = '(' + v.slice(0, 2) + ') ' + v.slice(2, 7) + '-' + v.slice(7);
+        else if (v.length > 2) v = '(' + v.slice(0, 2) + ') ' + v.slice(2);
+        e.target.value = v;
+    });
+
+    // Init
+    criarCalendario();
+    atualizarPortas();
+</script>
+
+</body>
+</html>
