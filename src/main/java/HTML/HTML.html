@@ -1711,7 +1711,7 @@
             span.className = val ? 'val-true' : 'val-false';
         });
     }
-//
+
     // Module F - Calendar
     function criarCalendario() {
         const grid = document.getElementById('calendarGrid');
@@ -1726,6 +1726,7 @@
             h.textContent = d;
             grid.appendChild(h);
         });
+
 
         for (let i = 0; i < startDay; i++) {
             const empty = document.createElement('div');
